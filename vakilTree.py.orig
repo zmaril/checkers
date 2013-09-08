@@ -1,0 +1,94 @@
+from checkergame import run
+# Creates a recursive tree structure to compute Vakil's criterion
+# for a tree given in Chris' Hash form
+
+
+class VakilNode:
+  def __init__(self,num):
+    self.nodesAbove = 1
+    self.left = None
+    self.right = None
+    self.name = num  #just to help me see if I'm doing it right
+
+  #depth first print of nodeNames, to test structure
+  def printSubTree(self):
+    if self.left != None:
+      self.left.printSubTree()
+    else:
+      print "LeftNone"
+    print self.name
+    if self.right != None:
+      self.right.printSubTree()
+    else:
+      print "RightNone"
+
+  #depth first vakil test
+  def vakil(self):
+    if self.left != None:
+      leftPassed, l = self.left.vakil()
+    else:
+      l = 1
+      leftPassed = True
+
+    if self.right != None:
+      rightPassed, r = self.right.vakil()
+    else:
+      r = 1
+      rightPassed = True
+
+    # given condition for vakil's test
+    vakilCondition = (l == 1 and r == 1) or (l != r)
+
+    # has to have already passed left, and right and pass here
+    passed = leftPassed and rightPassed and vakilCondition
+    self.nodesAbove = l + r
+    
+    return passed, self.nodesAbove
+
+#Tree is holds root of VakilTree in self.root
+class VakilTree:
+  def __init__(self,tree):
+    self.hashTree = tree
+    nodeList = [None]
+    #create the correct number of nodes
+    for i in range(len(tree)):
+      nodeList.append(VakilNode(i+1))
+
+    #create tree structure
+    for i in tree:
+      l = tree[i][0]
+      nodeList[i].left = nodeList[l]
+      if i != 1:
+        r = tree[i][1]
+      else:
+        r = 0
+      nodeList[i].right = nodeList[r]
+
+    self.root = nodeList[1]
+
+  def printTree(self):
+    self.root.printSubTree()
+
+  def vakil(self):
+    #call vakil from vakilNode above root and only returns True/False
+    return self.root.left.vakil()[0]
+
+
+# This will be the function you use
+# input = a hash style tree like the one returned from run
+# output = boolean result of vakil's test
+def vakilTest(tree):
+  if tree == {} or tree == {1: [0]}:
+    return True   #TODO: ask if this is true or false
+  vt = VakilTree(tree)
+  return vt.vakil()
+
+#while the numberings don't make sense, the trees do
+#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[0,0]})  #returns False symmetric
+#print vakilTest({1:[2], 2:[0,3], 3:[4,0], 4:[0,0]})  #returns True
+#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[0,5], 5:[0,0]})  #returns True
+#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[6,5], 5:[0,0], 6:[0,0]})  #returns False fails at node 4
+#a more realistic example
+#print vakilTest(run([99,1,99,3,99,5,99,99],[99,99,99,3,99,5,99,7])[1]) #False
+
+#print run([99,1,99,3,99,5,99,99],[99,99,99,3,99,5,99,7])[1]

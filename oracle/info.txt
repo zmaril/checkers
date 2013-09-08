@@ -1,0 +1,1 @@
+This folder is meant to contain files that act as an oracle for the vakil condition algorithm that frank gave me -Aaron.
