@@ -20,7 +20,7 @@ class TestVakilTree(unittest.TestCase):
         fourth_test_dict = {1:[2], 2:[3,4], 3:[0,0], 4:[6,5], 5:[0,0], 6:[0,0]}
         self.assertFalse(vakilTest(fourth_test_dict))
         
-        result = run([99,1,99,3,99,5,99,99],[99,99,99,3,99,5,99,7])[1]
+        #result = run([99,1,99,3,99,5,99,99],[99,99,99,3,99,5,99,7])[1]
         
         #TODO: run prints out a ton of messages that obsecure what is
         #actually going on. It messes with the beauty of watching all
