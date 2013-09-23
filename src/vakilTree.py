@@ -103,17 +103,5 @@ def vakilTest(tree,mults=None):
 #vt = VakilTree({1:[2], 2:[3,4], 3:[0,0], 4:[0,0]},[8,7,6,5])
 #vt.printTree()
 #while the numberings don't make sense, the trees do
-#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[0,0]})  #returns False symmetric
-#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[0,0]},[3,6,1,4]) #returns True
 
-#print vakilTest({1:[2], 2:[0,3], 3:[4,0], 4:[0,0]})  #returns True
-#print vakilTest({1:[2], 2:[0,3], 3:[4,0], 4:[0,0]},[3,1,1,1])  #returns False
-
-#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[0,5], 5:[0,0]})  #returns True
-#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[0,5], 5:[0,0]},[3,4,5,1,1])  #returns False
-
-
-#print vakilTest({1:[2], 2:[3,4], 3:[0,0], 4:[6,5], 5:[0,0], 6:[0,0]})  #returns False fails at node 4
-#a more realistic example
-#print vakilTest(run([99,1,99,3,99,5,99,99],[99,99,99,3,99,5,99,7])[1]) #False
 
