@@ -126,6 +126,4 @@ def intersectionNum(conditions, startPair= (0,1), debug=False):
     return 0
 
 
-#print intersectionNum([[99,99,99,3,99,5]]*3 + [[99,1,99,3,99,99]]) # output: 2
-#print intersectionNum([[99,99,99,3,99,5,6,7]]*7 + [[99,1,2,3,99,99,99,7]])  # output: 20
-#print intersectionNum([[99,99,2,99,4,5]]*9,(0,1),True) # output: program trace, result: 42
+

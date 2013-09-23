@@ -348,11 +348,11 @@ def run(a,b):
   while black != []:
     #Calls the function "game" and store the output 
     #(i.e. output = game(input))
-    print "black before->", black
-    print "red before->", red
+    #print "black before->", black
+    #print "red before->", red
     black, red, splitcount = game(black, red, n)
-    print "black after->", black
-    print "red after->", red
+    #print "black after->", black
+    #print "red after->", red
     runcount += 1
     tree.extend(splitcount*[runcount])
     #Keep the resulting red positions
