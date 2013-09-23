@@ -61,10 +61,3 @@ def allPairs(multiset):
     result.append(pair)
     pair = nextPair(multiset,pair)
   return result
-
-#Samples, uncomment to test
-#print(allPairs([[99,1,99,3]]*4+[[0,99,2,99]]*2 + [[99,1,2,99]]))
-#print(allPairs([1,1,2,3,4])) #[[1,1],[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
-#print(allPairs("aaron"))  #[['a','a'],['a','n'],['a','o'],['a','r'],['n','o'],['n','r'],['o','r']]
-#print(nextPair("aaron moore",['e','m'])) # = ['e','n']
-
