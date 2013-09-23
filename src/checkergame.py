@@ -4,8 +4,8 @@
 # June 27, 2012 - edits:Aaron Moore
 # 
 ################################################################################
-# This code contains functions to deal with Vakil's checker game, which is a way
-# of encoding the geometric Littlewood-Richardson rule.
+# This code contains functions to deal with Vakil's checker game,
+# which is a way of encoding the geometric Littlewood-Richardson rule.
 #
 # To start, use the function "run".
 #
@@ -17,20 +17,21 @@
 # partitions2checkers, checkers2partitions
 ################################################################################
 #
-# Converts a partition in multiplicity form to a checker input and vice versa
+# Converts a partition in multiplicity form to a checker input and
+# vice versa
 #
 # k, n : size of the grassmannian
 # part : partition in multiplicity form
 # checkers : a list of checker positions (see checkergame.py)
 #
 def partitions2checkers(k, n, part):
-  #First we change to a standard form, i.e. if 'part' is [2,3,4] then 'standard'
-  #will be [3,3,3,3,2,2,2,1,1]
+  #First we change to a standard form, i.e. if 'part' is [2,3,4] then
+  #'standard' will be [3,3,3,3,2,2,2,1,1]
   standard = []
   for i in range(len(part)-1,-1,-1):
     standard.extend(part[i]*[i+1])
-  #Now we walk the edge of the partition, appending 'checkers' wherever there is
-  #a downstep
+  #Now we walk the edge of the partition, appending 'checkers'
+  #wherever there is a downstep
   checkers = []
   checkers.append(n-k-standard[0])
   m = len(standard)
@@ -62,7 +63,8 @@ def checkers2partitions(checkers):
 # rtest
 ################################################################################
 #
-# Moves the red checkers. This calculates one turn for the "game" routine below.
+# Moves the red checkers. This calculates one turn for the "game"
+# routine below.
 #
 # input:
 #       x1, y1 - Coordinates of the ascending black checker
@@ -110,10 +112,11 @@ def rtest(x1, y1, x2, y2, R, n):
           block=1
       if block!=1:
         rts = R[0:n]
-        #Switch the rows of the red checkers in the critical diagonal and row,
-        #then move the left checker over to the column of the ascending black
-        #checker. Then we save the state of the red checkers so 'game' can come
-        #back to this branch later and go the other way. (See the example)
+        #Switch the rows of the red checkers in the critical diagonal
+        #and row, then move the left checker over to the column of the
+        #ascending black checker. Then we save the state of the red
+        #checkers so 'game' can come back to this branch later and go
+        #the other way. (See the example)
         rts[cr] = rts[cd]
         rts[cd] = 99
         rts[x1] = y2
@@ -130,7 +133,8 @@ def rtest(x1, y1, x2, y2, R, n):
 # game
 ################################
 #
-#Moves black checkers using Vakils geometric Littlewood-Richardson rule
+#Moves black checkers using Vakils geometric Littlewood-Richardson
+#rule
 # 
 # input:
 #       B - List of black checker positions
@@ -148,20 +152,20 @@ def game(B, R, n):
   #Determine the columns of the descending and ascending checkers.
   desc_col=1+B.index(n-1)
   asc_col=B.index(1+B[desc_col])
-  #The column of the right black checker to be sorted goes from desc_col to the
-  #end of the board.
+  #The column of the right black checker to be sorted goes from
+  #desc_col to the end of the board.
   for x2 in range(desc_col, n):
     #The next for-loop needs to start at 0 except at the beginning.
     if x2==desc_col+1:
       asc_col=0
-    #The column of the left black checker to be sorted goes from the beginning
-    #of the board to "x2".
+    #The column of the left black checker to be sorted goes from the
+    #beginning of the board to "x2".
     for x1 in range(asc_col, x2):
       #Determine the rows of the next pair of black checkers to be sorted.
       y1 = n - x2 + x1
       y2 = y1 - 1
-      #Red and black checkers are moved. "copy" is switched to 1 when a split
-      #occurs in "rtest"
+      #Red and black checkers are moved. "copy" is switched to 1 when
+      #a split occurs in "rtest"
       R, copy = rtest(x1, y1, x2, y2, R, n)
       B[x1] = B[x1]-1
       B[x2] = B[x2]+1
@@ -173,28 +177,29 @@ def game(B, R, n):
   return B, R, splitcount
 
 
-# intended to run exactly like game, except it stops both games on a split
-# whereas, game runs the 'leftmost' game through to the end
+# intended to run exactly like game, except it stops both games on a
+# split whereas, game runs the 'leftmost' game through to the end
 def gamePreemptive(B,R,n):
   splitcount = 0;
   save=[]
   #Determine the columns of the descending and ascending checkers.
   desc_col=1+B.index(n-1)
   asc_col=B.index(1+B[desc_col])
-  #The column of the right black checker to be sorted goes from desc_col to the
-  #end of the board.
+  #The column of the right black checker to be sorted goes from
+  #desc_col to the end of the board.
   for x2 in range(desc_col, n):
     #The next for-loop needs to start at 0 except at the beginning.
     if x2==desc_col+1:
       asc_col=0
-    #The column of the left black checker to be sorted goes from the beginning
-    #of the board to "x2".
+    #The column of the left black checker to be sorted goes from the
+    #beginning of the board to "x2".
     for x1 in range(asc_col, x2):
-      #Determine the rows of the next pair of black checkers to be sorted.
+      #Determine the rows of the next pair of black checkers to be
+      #sorted.
       y1 = n - x2 + x1
       y2 = y1 - 1
-      #Red and black checkers are moved. "copy" is switched to 1 when a split
-      #occurs in "rtest"
+      #Red and black checkers are moved. "copy" is switched to 1 when
+      #a split occurs in "rtest"
       R, copy = rtest(x1, y1, x2, y2, R, n)
       B[x1] = B[x1]-1
       B[x2] = B[x2]+1
@@ -203,7 +208,8 @@ def gamePreemptive(B,R,n):
         for i in range(0,n):
           B.insert(n, B[n-1-i])
         splitcount = splitcount + 1
-        return B,R,splitcount #return both options rather than continuing the left path
+        return B,R,splitcount #return both options rather than
+                              #continuing the left path
   return B, R, splitcount
 
 
@@ -214,42 +220,48 @@ def gamePreemptive(B,R,n):
 
 ################################################################################
 # maketree
-'''#############################################################################
-The binary trees used in the tournament routines are stored in python as
-dictionaries (another term for a hash table). Every node in the tree gets a
-number which corresponds to the index of the leaf in the output of "run". The
-python dictionary is a mapping whose input is the node number and the output
-is the pair of nodes directly above it. The "maketree" routine constructs this
-dictionary using the following method.
+#############################################################################
+# The binary trees used in the tournament routines are stored in
+# python as dictionaries (another term for a hash table). Every node
+# in the tree gets a number which corresponds to the index of the leaf
+# in the output of "run". The python dictionary is a mapping whose
+# input is the node number and the output is the pair of nodes
+# directly above it. The "maketree" routine constructs this dictionary
+# using the following method.
 
-The "run" algorithm prefers a certain direction in the tree. A node, say m (>1)
-corresponds with a leaf if you start at node m, go right once, then go left
-until the leaf. The 1st node, or root, corresponds to the 1st leaf; i.e. by
-starting at node 1 and only taking left branches, you will reach the 1st zero.
+# The "run" algorithm prefers a certain direction in the tree. A node,
+# say m (>1) corresponds with a leaf if you start at node m, go right
+# once, then go left until the leaf. The 1st node, or root,
+# corresponds to the 1st leaf; i.e. by starting at node 1 and only
+# taking left branches, you will reach the 1st zero.
 
-To understand the algorithm, one needs to understand how the input determines
-the tree structure. As an example, take [1,1,2,3,3,3]. This indicates that as
-you travel from the first node to the first leaf (as always, in the default
-direction) two nodes are encountered, hence [1,1]. These are the splits from
-the checker game. Then you backtrack to the nearest node and call it 2. As you
-head to the second leaf from 2, you encounter one split, as indicated by [2].
-Last, you backtrack to the nearest node and call it 3. Then [3,3,3] indicates
-that 3 splits are encountered. Any unfinished nodes go directly to leaves, and
-are numbered in order as you backtrack through the tree.
+# To understand the algorithm, one needs to understand how the input
+# determines the tree structure. As an example, take
+# [1,1,2,3,3,3]. This indicates that as you travel from the first node
+# to the first leaf (as always, in the default direction) two nodes
+# are encountered, hence [1,1]. These are the splits from the checker
+# game. Then you backtrack to the nearest node and call it 2. As you
+# head to the second leaf from 2, you encounter one split, as
+# indicated by [2].  Last, you backtrack to the nearest node and call
+# it 3. Then [3,3,3] indicates that 3 splits are encountered. Any
+# unfinished nodes go directly to leaves, and are numbered in order as
+# you backtrack through the tree.
 
-For the "maketree" algorithm, consider [1,1,1,2,3,3,4,7,7] as input. It helps
-to draw this tree by hand to compare what the algorithm is doing. As the input
-has 9 entries, there will be 9 nodes; 10 including the root node. Furthermore,
-each node can only be accessed from below by one node, so each node except the
-root will be in the image of exactly one node. So we make a pool of integers
-from 1 to 10 (note *1 below.) The input tells us that nothing branches to the
-right of nodes 5, 6, 8, 9, or 10, so by hand we might begin by making these keys
-and pointing them to zero (*2). Node 7 has splits (2 of them), so we look at the
-two entries after 7 in the pool of nodes, (*3) and a little thought shows that 7
-must point to 9 and 9 must point to 8 (both on the left this time.) Continue
-this procedure by using the largest nodes from the pool first to fill in the
-rest of the tree.
-'''#############################################################################
+# For the "maketree" algorithm, consider [1,1,1,2,3,3,4,7,7] as
+# input. It helps to draw this tree by hand to compare what the
+# algorithm is doing. As the input has 9 entries, there will be 9
+# nodes; 10 including the root node. Furthermore, each node can only
+# be accessed from below by one node, so each node except the root
+# will be in the image of exactly one node. So we make a pool of
+# integers from 1 to 10 (note *1 below.) The input tells us that
+# nothing branches to the right of nodes 5, 6, 8, 9, or 10, so by hand
+# we might begin by making these keys and pointing them to zero
+# (*2). Node 7 has splits (2 of them), so we look at the two entries
+# after 7 in the pool of nodes, (*3) and a little thought shows that 7
+# must point to 9 and 9 must point to 8 (both on the left this time.)
+# Continue this procedure by using the largest nodes from the pool
+# first to fill in the rest of the tree.
+#############################################################################
 def maketree(a):
   #if no splits occurred return trivial tree  
   if a==[]:
@@ -274,6 +286,7 @@ def maketree(a):
     if len(out[i])==1 and i!=1:
       out[i].insert(0,0)
   return out
+
 #Here is one of the examples referenced in the explanation above.
 #print(maketree([1,2,2,2,2,5,5,7,7,7,9]))
 #print(maketree([1,1,1,2,3,3,4,7,7]))
@@ -281,11 +294,11 @@ def maketree(a):
 ################################################################################
 # run
 ################################################################################
-# NOTE: it seems that when calling you need to call run(a[:],b[:]) 
+# NOTE: it seems that when calling you need to call run(a[:],b[:])
 #       otherwise it changes them and results in an error - Aaron
 #
-# The main procedure; runs an entire checker game (and all splits) based on two
-# input schubert conditions
+# The main procedure; runs an entire checker game (and all splits)
+# based on two input schubert conditions
 #
 # input:
 #         a - First schubert condition
@@ -306,7 +319,8 @@ def maketree(a):
 #                example of this)
 #
 def run(a,b):
-  #First we combine the two initial conditions into a list of checker positions
+  #First we combine the two initial conditions into a list of checker
+  #positions
   red = []
   tree = []
   n = len(a)
@@ -318,8 +332,8 @@ def run(a,b):
       red.append(99)
     else:
       red.append(a.pop())
-  #Then we check for red checkers above the anti-diagonal.
-  #If one is found, give a null output (a list with n 99's and an empty dict)
+  #Then we check for red checkers above the anti-diagonal.  If one is
+  #found, give a null output (a list with n 99's and an empty dict)
   for i in range(n):
     if i+red[i] < n-1: 
       return [n*[99]], {}
@@ -332,7 +346,8 @@ def run(a,b):
     black.append(n-i-1)
 
   while black != []:
-    #Calls the function "game" and store the output (i.e. output = game(input))
+    #Calls the function "game" and store the output 
+    #(i.e. output = game(input))
     print "black before->", black
     print "red before->", red
     black, red, splitcount = game(black, red, n)
@@ -368,8 +383,8 @@ def setupGame(first,second):
       red.append(99)
     else:
       red.append(a.pop())
-  #Then we check for red checkers above the anti-diagonal.
-  #If one is found, give a null output (a list with n 99's and an empty dict)
+  #Then we check for red checkers above the anti-diagonal.  If one is
+  #found, give a null output (a list with n 99's and an empty dict)
   for i in range(n):
     if i+red[i] < n-1:
       return [n*[99]], {}
