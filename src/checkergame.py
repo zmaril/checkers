@@ -3,7 +3,7 @@
 # Christopher Brooks
 # June 27, 2012 - edits:Aaron Moore
 # 
-################################################################################
+
 # This code contains functions to deal with Vakil's checker game,
 # which is a way of encoding the geometric Littlewood-Richardson rule.
 #
@@ -12,10 +12,17 @@
 # input: red checker initial positions, dimension of the ambient space
 # output: list of red checker positions
 
+#printPartition displays the given partition graphically. 
+def printProblem(k,n,part):
+  part = part + [0]*(k - len(part))
+  for i in range(0,k):
+    line = ""
+    for j in range(0,n-k):
+      line = line + ("-" if j > part[i]-1 else "*")
+    print(line)
 
-################################################################################
+
 # partitions2checkers, checkers2partitions
-################################################################################
 #
 # Converts a partition in multiplicity form to a checker input and
 # vice versa
@@ -24,6 +31,11 @@
 # part : partition in multiplicity form
 # checkers : a list of checker positions (see checkergame.py)
 #
+#TODO: Tests to write
+#One with 0 in middle with partition
+#Check k > length(part)
+#Checke whether part is a weakly decreasing sequence of integers 
+#TODO: there is a bug in here somewhere.
 def partitions2checkers(k, n, part):
   #First we change to a standard form, i.e. if 'part' is [2,3,4] then
   #'standard' will be [3,3,3,3,2,2,2,1,1]
@@ -47,7 +59,6 @@ def partitions2checkers(k, n, part):
     #print out_checkers, i
   return out_checkers
 
-
 def checkers2partitions(checkers):
   out_std = []
   for i in range(len(checkers)):
@@ -59,9 +70,9 @@ def checkers2partitions(checkers):
       out[i-1] = out_std.count(i)
   return out
 
-################################################################################
+
 # rtest
-################################################################################
+
 #
 # Moves the red checkers. This calculates one turn for the "game"
 # routine below.
@@ -76,7 +87,8 @@ def checkers2partitions(checkers):
 #       R - Updated list of red checker positions
 #       sp - "1" if a split occured, "0" otherwise
 #
-def rtest(x1, y1, x2, y2, R, n):
+def rtest(x1, y1, x2, y2, R, n): #PASS BY REFERENCE 
+  #print(x1,y1,x2,y2,R,n)
   greek=2; roman=2; sp=0
   #Find the critical row, "cr".
   for col in range(n-1, x2-1, -1):
@@ -121,11 +133,16 @@ def rtest(x1, y1, x2, y2, R, n):
         rts[cd] = 99
         rts[x1] = y2
         for i in range(0,n):
-          R.insert(n, rts[n-1-i])
+          R.insert(n, rts[n-1-i]) #TODO: This is weird. I don't like
+                                  #storing state this way. The program
+                                  #should be able to look back and see
+                                  #what the state was before the
+                                  #split.
           sp = 1#Flag that indicates that split occured
   if roman == 2 and greek == 0:
     R[x1] = R[cr]
     R[cr] = 99
+    #print(R,sp) 
   return R, sp
 
 
