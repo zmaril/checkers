@@ -17,10 +17,10 @@ def test_all_problems_G(k,n, db=0):
       shape_type[i+1][-1] = item
     while problem_type != []:
       print_prob, sch_prob = makeproblem(k, n, problem_type, shapes, shape_type)
-      print(n,sch_prob)
+      #print(n,sch_prob)
       key = Key(n,parts=sch_prob)
       gg = GG(key).alternating
-      print(sch_prob, gg)
+      #print(sch_prob, gg)
       partlevel, treelevel, mults = get_entire_tree(sch_prob)
       if db == 0 and mults >= 4:
         print(vakiltest_nodb(partlevel, treelevel))
@@ -33,7 +33,7 @@ def test_all_problems_G(k,n, db=0):
     record_failures = open('failures_len_{0}.p'.format(m), 'wb')
     pickle.dump(failures, record_failures, -1)
     record_failures.close()
-    print("All problems of length {0} have been tested".format(m))
+    #print("All problems of length {0} have been tested".format(m))
   return "All problems on G({0},{1}) have been tested.".format(k,n)
 
 # Here is a sample script that walks through every possible schubert problem on

@@ -3,18 +3,25 @@
 #otherwise wrong
 import inspect
 
-class Memoize:
+class GGMemoize:
     def __init__(self, f):
         self.f = f
         self.memo = {}
     def __call__(self, *args):
-        if not args in self.memo:
-            print("args")
-            print(args[0].partitions)
-            print(args[0].startedBlack)
-            print(args[0].startedRed)
-            self.memo[args] = self.f(*args)
-        return self.memo[args]
+      arg = args[0]
+#      print("arg")
+      p = tuple(map(tuple,arg.partitions))
+      b = tuple(map(tuple,arg.startedBlack))
+      r = tuple(map(tuple,arg.startedRed))
+      pbr = (p,b,r)
+#      print(pbr)
+      if not pbr in self.memo:
+        # print("args")
+        # print(p)
+        # print(b)
+        # print(r)
+        self.memo[pbr] = self.f(arg)
+      return self.memo[pbr]
 
 #TODO: see how gamePreemptive should handle trees (source checkergame.py)
 #TODO: find source of infinite loop
@@ -45,13 +52,16 @@ class Key:
     else:
       self.trees = t[:]
 
-  # def __eq__(self,other):
-  #   n = self.n == other.n
-  #   p = self.partitions == other.partitions
-  #   s = self.startedBlack == other.startedBlack
-  #   r = self.startedRed == other.startedRed
-  #   return n and p and s and r
-
+  def __eq__(self,other):
+      if other == None:
+         return False 
+      print(self,other)
+      n = self.n == other.n
+      p = self.partitions == other.partitions
+      s = self.startedBlack == other.startedBlack
+      r = self.startedRed == other.startedRed
+      return n and p and s and r
+  
   # TODO:  Verify this works, check error conditions on remove and setupGame
   # define a new Key by removing the items(2) in pair form self.partitions
   # and adding the appropriate started game
@@ -179,7 +189,7 @@ def GG(key):
 #	      print result.solutions
   return vote(results)
   
-#GG=Memoize(GG)
+GG=GGMemoize(GG)
 
 def testKnownFailures4_8():
   single = [[99,99,99,3,99,5,6,7]]
