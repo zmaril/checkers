@@ -60,7 +60,8 @@ def makeproblem(k, n, problem_type, shapes, shape_type):
 
 ################################################################################
 # next_partition
-################################################################################
+#########################################################################
+#######
 #
 # input is a partition in multiplicity form, m is max size of part. Returns the
 # next lexicographic partition or [] if there are no more partitions.
