@@ -11,17 +11,17 @@ class GGMemoize:
       arg = args[0]
 #      print("arg")
       p = tuple(map(tuple,arg.partitions))
-      b = tuple(map(tuple,arg.startedBlack))
-      r = tuple(map(tuple,arg.startedRed))
-      pbr = (p,b,r)
-#      print(pbr)
-      if not pbr in self.memo:
+#      print("startedGames",arg.startedGames)
+      gs = tuple(map(lambda x: tuple(map(tuple,x)),arg.startedGames))
+      pgs = (p,gs)
+#      print(pgs)
+      if not pgs in self.memo:
         # print("args")
         # print(p)
         # print(b)
         # print(r)
-        self.memo[pbr] = self.f(arg)
-      return self.memo[pbr]
+        self.memo[pgs] = self.f(arg)
+      return self.memo[pgs]
 
 #TODO: see how gamePreemptive should handle trees (source checkergame.py)
 #TODO: find source of infinite loop
@@ -42,13 +42,12 @@ class Result:
 
 #TODO: Figure out how to make black & red lists of lists
 class Key:
-  def __init__(self,_n, parts = [], black = [], red = [], t=None):
+  def __init__(self,_n, parts = [], games = [], t=None):
     self.n = _n
     self.partitions = parts[:]
-    self.startedBlack = black[:] #TODO: Figure out how to make this a list of lists
-    self.startedRed = red[:]     #TODO: Figure out how to make this a list of lists
+    self.startedGames = games
     if t == None:
-      self.trees = [{}] * (len(self.startedBlack) / _n)  #TODO: Check this, it doesn't look right
+      self.trees = [{}] * (len(self.startedGames) / _n)  #TODO: Check this, it doesn't look right
     else:
       self.trees = t[:]
 
@@ -58,23 +57,21 @@ class Key:
       print(self,other)
       n = self.n == other.n
       p = self.partitions == other.partitions
-      s = self.startedBlack == other.startedBlack
-      r = self.startedRed == other.startedRed
-      return n and p and s and r
+      s = self.startedGames == other.startedGames
+      return n and p and s
   
   # TODO:  Verify this works, check error conditions on remove and setupGame
   # define a new Key by removing the items(2) in pair form self.partitions
   # and adding the appropriate started game
   def newKeyFromPartition(self,pair):
-    newKey = Key(self.n,self.partitions,self.startedBlack,self.startedRed,self.trees)
+    newKey = Key(self.n,self.partitions,self.startedGames,self.trees)
     newKey.partitions.remove(pair[0])
     newKey.partitions.remove(pair[1])
     
     black,red = setupGame(pair[0],pair[1])
 	
     if red != {}:
-      newKey.startedBlack.append(black)
-      newKey.startedRed.append(red)
+      newKey.startedGames.append((black,red))
     else:
       return None
 
@@ -83,27 +80,29 @@ class Key:
   # TODO:
   # define a new Key by advancing in game[i]
   def newKeyFromAdvancingGame(self,i):
-    newKey1 = Key(self.n,self.partitions,self.startedBlack,self.startedRed,self.trees)
-    black, red, split = gamePreemptive(newKey1.startedBlack[i][:],newKey1.startedRed[i][:],newKey1.n)
+    newKey1 = Key(self.n,self.partitions,self.startedGames,self.trees)
+    print(self.n,self.partitions,self.startedGames,self.trees)
+    try:
+      black, red, split = gamePreemptive(newKey1.startedGames[i][0][:],
+                                         newKey1.startedGames[i][1][:],
+                                         newKey1.n)
+    except IndexError:
+      print(i,newKey1.startedGames)
     #need to make two keys
     if  split > 0:
       black1 = black[:newKey1.n]
       red1 = red[:newKey1.n]
       black2 = black[newKey1.n:]
       red2 = red[newKey1.n:]
-      newKey1.startedBlack.pop(i)
-      newKey1.startedRed.pop(i)
-      newKey2 = Key(self.n,newKey1.partitions,newKey1.startedBlack,newKey1.startedRed,newKey1.trees)
-      newKey1.startedBlack.append(black1)
-      newKey2.startedBlack.append(black2)
-      newKey1.startedRed.append(red1)
-      newKey2.startedRed.append(red2)
+      newKey1.startedGames.pop(i)
+      newKey2 = Key(self.n,newKey1.partitions,newKey1.startedGames,newKey1.trees)
+      newKey1.startedGames.append((black1,red1))
+      newKey2.startedGames.append((black2,red2))
       return newKey1, newKey2
     #no split need to add new partitions tournament style
     else:
       #TODO: may need to make sure this is correct
-      newKey1.startedBlack.pop(i)
-      newKey1.startedRed.pop(i)
+      newKey1.startedGames.pop(i)
       newKey1.partitions.append(red[:])
       return newKey1, None
     
@@ -151,7 +150,7 @@ def GG(key):
     pair = nextPair(key.partitions,pair)
     
   #Try Advancing all games
-  for i in range(len(key.startedBlack)):
+  for i in range(len(key.startedGames)):
     key2 = None
     #handle a split in the game!
     key1, key2 = key.newKeyFromAdvancingGame(i)
