@@ -163,6 +163,7 @@ def rtest(x1, y1, x2, y2, R, n): #PASS BY REFERENCE
 #       R - Updated list of red checker positions
 #
 
+import util
 def game(B, R, n):
   splitcount=0
   save=[]
@@ -178,7 +179,8 @@ def game(B, R, n):
     #The column of the left black checker to be sorted goes from the
     #beginning of the board to "x2".
     for x1 in range(asc_col, x2):
-      #Determine the rows of the next pair of black checkers to be sorted.
+      #Determine the rows of the next pair of black checkers to be sorted
+#      util.draw_game(B,R,n)
       y1 = n - x2 + x1
       y2 = y1 - 1
       #Red and black checkers are moved. "copy" is switched to 1 when
@@ -191,6 +193,7 @@ def game(B, R, n):
         for i in range(0,n):
           B.insert(n, B[n-1-i])
         splitcount = splitcount + 1
+#  util.draw_game(B,R,n)
   return B, R, splitcount
 
 
@@ -338,6 +341,7 @@ def maketree(a):
 def run(a,b):
   #First we combine the two initial conditions into a list of checker
   #positions
+  #print(a,b)
   red = []
   tree = []
   n = len(a)
@@ -378,6 +382,7 @@ def run(a,b):
     del black[0:n]
     del red[0:n]
   tree = maketree(tree)#Make a hash table with the structure of the tree.
+  #print(rstore,tree)
   return rstore, tree
 
 #print run([99,1,2,99,4,5],[99,1,2,99,4,5])
