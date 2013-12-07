@@ -22,8 +22,8 @@ def test_all_problems_G(k,n, db=0):
       gg = GG(key).alternating
       #print(sch_prob, gg)
       partlevel, treelevel, mults = get_entire_tree(sch_prob)
-      if db == 0 and mults >= 4:
-        print(vakiltest_nodb(partlevel, treelevel))
+      #if db == 0 and mults >= 4:
+      #  print(vakiltest_nodb(partlevel, treelevel))
       if db == 1 and mults >= 4:
         fail = tournament(sch_prob, 1)
         if fail >= 1:

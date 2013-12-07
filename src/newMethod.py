@@ -109,14 +109,13 @@ class Key:
     
 
 def vote(results):
+  results = [x for x in results if x != None]
   if results == []:
     return Result(0,0,1,True)		#Empty result
-  if results == [None]:
-    return Result(0,0,0,True)
   if len(results) == 1:
     return results[0]
 
-  results = [x for x in results if x != None]
+
   solutions = results[0].solutions
   totExceptions = 0
   totMatieu = 0
