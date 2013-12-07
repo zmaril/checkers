@@ -1,4 +1,5 @@
 from galoistest import *
+from newMethod import GG, Key
 import pickle
 
 def test_all_problems_G(k,n, db=0):
@@ -16,6 +17,10 @@ def test_all_problems_G(k,n, db=0):
       shape_type[i+1][-1] = item
     while problem_type != []:
       print_prob, sch_prob = makeproblem(k, n, problem_type, shapes, shape_type)
+      print(n,sch_prob)
+      key = Key(n,parts=sch_prob)
+      gg = GG(key).alternating
+      print(sch_prob, gg)
       partlevel, treelevel, mults = get_entire_tree(sch_prob)
       if db == 0 and mults >= 4:
         print(vakiltest_nodb(partlevel, treelevel))
