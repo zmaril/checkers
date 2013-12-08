@@ -9,19 +9,9 @@ class GGMemoize:
         self.memo = {}
     def __call__(self, *args):
       arg = args[0]
-#      print("arg")
-      p = tuple(map(tuple,arg.partitions))
-#      print("startedGames",arg.startedGames)
-      gs = tuple(map(lambda x: tuple(map(tuple,x)),arg.startedGames))
-      pgs = (p,gs)
-#      print(pgs)
-      if not pgs in self.memo:
-        # print("args")
-        # print(p)
-        # print(b)
-        # print(r)
-        self.memo[pgs] = self.f(arg)
-      return self.memo[pgs]
+      if not arg in self.memo:
+        self.memo[arg] = self.f(arg)
+      return self.memo[arg]
 
 #TODO: see how gamePreemptive should handle trees (source checkergame.py)
 #TODO: find source of infinite loop
@@ -44,8 +34,8 @@ class Result:
 class Key:
   def __init__(self,_n, parts = [], games = [], t=None):
     self.n = _n
-    self.partitions = parts[:]
-    self.startedGames = games
+    self.partitions = sorted(parts[:])
+    self.startedGames = sorted(games[:])
     if t == None:
       self.trees = [{}] * (len(self.startedGames) / _n)  #TODO: Check this, it doesn't look right
     else:
@@ -54,12 +44,16 @@ class Key:
   def __eq__(self,other):
       if other == None:
          return False 
-      print(self,other)
       n = self.n == other.n
       p = self.partitions == other.partitions
       s = self.startedGames == other.startedGames
       return n and p and s
-  
+
+  def __hash__(self):
+    p = tuple(map(tuple,self.partitions))
+    gs = tuple(map(lambda x: tuple(map(tuple,x)),self.startedGames))
+    return hash((self.n,p,gs))
+
   # TODO:  Verify this works, check error conditions on remove and setupGame
   # define a new Key by removing the items(2) in pair form self.partitions
   # and adding the appropriate started game
@@ -81,13 +75,9 @@ class Key:
   # define a new Key by advancing in game[i]
   def newKeyFromAdvancingGame(self,i):
     newKey1 = Key(self.n,self.partitions,self.startedGames,self.trees)
-    print(self.n,self.partitions,self.startedGames,self.trees)
-    try:
-      black, red, split = gamePreemptive(newKey1.startedGames[i][0][:],
-                                         newKey1.startedGames[i][1][:],
-                                         newKey1.n)
-    except IndexError:
-      print(i,newKey1.startedGames)
+    black, red, split = gamePreemptive(newKey1.startedGames[i][0][:],
+                                       newKey1.startedGames[i][1][:],
+                                       newKey1.n)
     #need to make two keys
     if  split > 0:
       black1 = black[:newKey1.n]
