@@ -6,3 +6,7 @@ class TestnewMethod(unittest.TestCase):
         r = GG(Key(8,[[99,99,2,3,99,99,6,7]]*4))
         self.assertEqual(r.solutions,6)
         self.assertEqual(r.alternating,False)
+
+        r = GG(Key(6,[[99,99,2,99,4,5]]*3+[[99,1,99,3,99,5]]*2))
+        self.assertEqual(r.solutions,6)
+        self.assertEqual(r.alternating,True)
