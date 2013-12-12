@@ -96,16 +96,18 @@ class Key:
       newKey1.partitions.append(red[:])
       return newKey1, None
     
-
 def vote(results):
-  results = [x for x in results if x != None]
   if results == []:
     return Result(0,0,1,True)		#Empty result
+  if all(map(lambda x: x is None,results)):
+    return Result(0,0,0,True)		#Test case for bottom of tree
   if len(results) == 1:
     return results[0]
 
+  results = [x for x in results if x != None]
 
   solutions = results[0].solutions
+
   totExceptions = 0
   totMatieu = 0
   alternating = results[0].alternating
