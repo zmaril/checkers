@@ -132,13 +132,8 @@ def rtest(x1, y1, x2, y2, R, n): #PASS BY REFERENCE
         rts[cr] = rts[cd]
         rts[cd] = 99
         rts[x1] = y2
-        for i in range(0,n):
-          R.insert(n, rts[n-1-i]) #TODO: This is weird. I don't like
-                                  #storing state this way. The program
-                                  #should be able to look back and see
-                                  #what the state was before the
-                                  #split.
-          sp = 1#Flag that indicates that split occured
+        R.extend(rts[0:n]) #TODO: This is still weird.
+        sp = 1#Flag that indicates that split occured
   if roman == 2 and greek == 0:
     R[x1] = R[cr]
     R[cr] = 99
@@ -180,7 +175,7 @@ def game(B, R, n):
     #beginning of the board to "x2".
     for x1 in range(asc_col, x2):
       #Determine the rows of the next pair of black checkers to be sorted
-#      util.draw_game(B,R,n)
+      #util.draw_game(B,R,n)
       y1 = n - x2 + x1
       y2 = y1 - 1
       #Red and black checkers are moved. "copy" is switched to 1 when
@@ -190,10 +185,9 @@ def game(B, R, n):
       B[x2] = B[x2]+1
       if copy == 1:
         #Records the state of the black checkers. Queues it
-        for i in range(0,n):
-          B.insert(n, B[n-1-i])
+        B.extend(B[0:n])
         splitcount = splitcount + 1
-#  util.draw_game(B,R,n)
+  #util.draw_game(B,R,n)
   return B, R, splitcount
 
 
