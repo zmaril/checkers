@@ -163,7 +163,7 @@ def GG(key):
       )
 	  		  
       if ((result1.alternating and result2.alternating) and
-          (result1.solutions != result2.solutions or result1.solutions == 1)):
+          (result1.solutions != result2.solutions or result1.solutions == 1 or result1.solutions == 0)):
         combinedResult.alternating = True
       elif result1.solutions == result2.solutions:
         if result1.solutions == 6:
