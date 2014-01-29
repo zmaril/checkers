@@ -51,7 +51,10 @@ class Key:
 
   def __hash__(self):
     p = tuple(map(tuple,self.partitions))
-    gs = tuple(map(lambda x: tuple(map(tuple,x)),self.startedGames))
+    gs = []
+    for x in self.startedGames:
+        gs.append(tuple(map(tuple,x)))
+    gs = tuple(gs)
     return hash((self.n,p,gs))
 
   # TODO:  Verify this works, check error conditions on remove and setupGame
