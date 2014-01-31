@@ -70,100 +70,6 @@ def checkers2partitions(checkers):
       out[i-1] = out_std.count(i)
   return out
 
-
-# rtest
-
-#
-# Moves the red checkers. This calculates one turn for the "game"
-# routine below.
-#
-# input:
-#       x1, y1 - Coordinates of the ascending black checker
-#       x2, y2 - Coordinates of the descending black checker
-#       R - List of red checker positions
-#       n - Dimension of the board
-#
-#	output:
-#       R - Updated list of red checker positions
-#       sp - "1" if a split occured, "0" otherwise
-#
-
-from rtest import rtest
-def _rtest(x1, y1, x2, y2, R, n): #PASS BY REFERENCE 
-  saved = R[:]
-  return rtest(x1,y1,x2,y2,R,n)
-# #  print("\n")
-# #  print "py",x1,y1,x2,y2,R,n
-#   greek=2; roman=2; sp=0; cr = 99; cd = 99;
-#   #Find the critical row, "cr".
-#   for col in range(n-1, x2-1, -1):
-# #    print "py","col",col,"n",n,"x2-1",x2-1
-# #    print "py","cr",cr,"greek",greek,"roman",roman
-#     if R[col] == y2:
-#       cr = col
-#       if col == x2: 
-#         greek = 0
-#       else:
-#         greek = 1
-#   #Find the critical diagonal, "cd".
-#   for col in range(x2-1, -1, -1):
-# #    print "py","col",col,"n",n,"x2-1",x2-1
-# #    print "py","cr",cr,"greek",greek,"roman",roman
-#     if x2-col+R[col] == n:
-#       cd = col
-#       if (y1, x1) == (R[col], col):
-#         roman = 0
-#       else:
-#         roman = 1
-
-# #  print "py","cd",cd,"cr",cr,"greek",greek,"roman",roman
-#   if roman == 0:
-#     R[x1] = R[x1]-1
-#     if greek == 0:
-#       R[x2] += 1
-#     if greek == 1:
-#       R[cr] += 1
-
-#   if roman == 1:
-#     if greek == 0:
-# #      print "py",x1,y1,x2,y2,R,n
-#       R[cr] = R[cd]
-#       R[cd] = 99
-#       R[x1] = y2
-#     if greek == 1:
-#       block=0
-# #      print "py","cd",cd,"cr",cr
-#       for blockpos in range(cr-1, cd, -1):
-# #        print "py","blockpos",blockpos
-#         if R[cr] < R[blockpos] < R[cd]:
-#           block=1
-#       if block!=1:
-#         rts = R[0:n]
-#         #Switch the rows of the red checkers in the critical diagonal
-#         #and row, then move the left checker over to the column of the
-#         #ascending black checker. Then we save the state of the red
-#         #checkers so 'game' can come back to this branch later and go
-#         #the other way. (See the example)
-#         rts[cr] = rts[cd]
-#         rts[cd] = 99
-#         rts[x1] = y2
-#         R.extend(rts[0:n]) #TODO: This is still weird.
-#         sp = 1#Flag that indicates that split occured
-
-#   if roman == 2 and greek == 0:
-#     R[x1] = R[cr]
-#     R[cr] = 99
-#     #print(R,sp) 
-# #  print "py","sp",sp,R
-# #  print (R,sp)
-# #  if (rtest(x1,y1,x2,y2,saved,n) != (R,sp)):
-# #    print("failed")
-# #    print("Input",x1,y1,x2,y2,saved,n)
-# #    print("Rtest",rtest(x1,y1,x2,y2,saved,n))
-# #    print("Python",R,sp)
-#   return R, sp
-
-
 ################################
 # game
 ################################
@@ -180,7 +86,7 @@ def _rtest(x1, y1, x2, y2, R, n): #PASS BY REFERENCE
 #       B - Updated list of black checker positions
 #       R - Updated list of red checker positions
 #
-
+from rtest import rtest
 import util
 def game(B, R, n):
   splitcount=0
@@ -203,7 +109,7 @@ def game(B, R, n):
       y2 = y1 - 1
       #Red and black checkers are moved. "copy" is switched to 1 when
       #a split occurs in "rtest"
-      R, copy = _rtest(x1, y1, x2, y2, R, n)
+      R, copy = rtest(x1, y1, x2, y2, R, n)
       B[x1] = B[x1]-1
       B[x2] = B[x2]+1
       if copy == 1:
@@ -237,7 +143,7 @@ def gamePreemptive(B,R,n):
       y2 = y1 - 1
       #Red and black checkers are moved. "copy" is switched to 1 when
       #a split occurs in "rtest"
-      R, copy = _rtest(x1, y1, x2, y2, R, n)
+      R, copy = rtest(x1, y1, x2, y2, R, n)
       B[x1] = B[x1]-1
       B[x2] = B[x2]+1
       if copy == 1:

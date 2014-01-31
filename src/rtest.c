@@ -1,5 +1,25 @@
 #include <Python.h>
 
+/* rtest
+
+
+ Moves the red checkers. This calculates one turn for the "game"
+ routine below.
+
+ input:
+       x1, y1 - Coordinates of the ascending black checker
+       x2, y2 - Coordinates of the descending black checker
+       R - List of red checker positions
+       n - Dimension of the board
+
+	output:
+       R - Updated list of red checker positions
+       sp - "1" if a split occured, "0" otherwise
+*/
+
+
+
+
 static PyObject* rtest(PyObject* self, PyObject* args)
 {
 	int x1, y1, x2, y2, n;

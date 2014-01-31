@@ -1,7 +1,8 @@
 import unittest 
-from checkergame import _rtest,run
+from checkergame import run
+from rtest import rtest
 
-rtest = _rtest
+
 class TestCheckergame(unittest.TestCase):
     def test_rtest(self):
         #These tests are from the matrix in
