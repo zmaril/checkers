@@ -1,3 +1,5 @@
 *~
 *.pyc
 failures_len*
+rtest.so
+build
