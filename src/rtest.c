@@ -17,117 +17,94 @@
        sp - "1" if a split occured, "0" otherwise
 */
 
-
-
-
 static PyObject* rtest(PyObject* self, PyObject* args)
 {
 	int x1, y1, x2, y2, n;
-	int i;
-	PyObject* R; 
- 
+	int i, length;
+	PyObject* R;
+
 	if (!PyArg_ParseTuple(args,"iiiiOi", &x1, &y1, &x2, &y2, &R, &n))
 		return NULL;
+	length = PyList_Size(R);
+	long r[length+n];
 
-	/* printf("c  %d %d %d %d [",x1,y1,x2,y2); */
-	/* for (i = 0; i < PyList_Size(R)-1; i++){ */
-	/* 	printf("%d, ",PyInt_AsLong(PyList_GetItem(R,i))); */
-	/* } */
-	/* printf("%d] %d\n",PyInt_AsLong(PyList_GetItem(R,i)),n); */
+	for (i=0; i<length;i++){
+		r[i] = PyInt_AsLong(PyList_GetItem(R,i));
+ 	}
 
 	int greek = 2, roman=2, sp = 0;
 	int cr=-1, cd=-1;
 	int col;
 	for (col = n-1; col > x2-1; col--){
-		/* printf("c  col %d n %d x2-1 %d\n",col,n,x2-1); */
-		/* printf("c  cr %d greek %d roman %d\n",cr, greek,roman); */
-		if (PyInt_AsLong(PyList_GetItem(R,col)) == y2){
+		if (r[col] == y2){
 			cr = col;
 			if (col == x2)
 				greek = 0;
 			else
 				greek = 1;
-		}		
+		}
 	}
-	
+
 	for (col = x2-1; col > -1; col--){
-		/* printf("c  col %d n %d x2-1 %d\n",col,n,x2-1); */
-		/* printf("c  cr %d greek %d roman %d\n",cr, greek,roman); */
-		if (x2-col+PyInt_AsLong(PyList_GetItem(R,col)) == n){
+		if (x2-col+r[col] == n){
 			cd = col;
-			if (y1 == PyInt_AsLong(PyList_GetItem(R,col)) && x1 == col){
+			if (y1 == r[col] && x1 == col){
 				roman = 0;
 			}
 			else{
 				roman = 1;
 			}
 		}
-	}		
-	
-	/* printf("c  cd %d cr %d greek %d roman %d\n",cd,cr, greek,roman); */
-	PyObject* t;
-	if (roman == 0){
-		t = Py_BuildValue("i",PyInt_AsLong(PyList_GetItem(R,x1))-1);
-		PyList_SetItem(R,x1,t);
+	}
 
+	if (roman == 0){
+		r[x1]=r[x1]-1;
 		if (greek == 0){
-			t = Py_BuildValue("i",PyInt_AsLong(PyList_GetItem(R,x2))+1);
-			PyList_SetItem(R,x2,t);
+			r[x2] += 1;
 		}
 		if(greek == 1){
-			t = Py_BuildValue("i",PyInt_AsLong(PyList_GetItem(R,cr))+1);
-			PyList_SetItem(R,cr,t);
+			r[cr] += 1;
 		}
 	}
 
 	if (roman == 1){
 		if (greek == 0){
-			/* printf("c  %d %d %d %d [",x1,y1,x2,y2); */
-			/* for (i = 0; i < PyList_Size(R)-1; i++){ */
-			/* 	printf("%d, ",PyInt_AsLong(PyList_GetItem(R,i))); */
-			/* } */
-			/* printf("%d] %d\n",PyInt_AsLong(PyList_GetItem(R,i)),n); */
-
-			PyList_SetItem(R,cr,PyList_GetItem(R,cd));
-			PyList_SetItem(R,cd,Py_BuildValue("i",(long) 99));
-			PyList_SetItem(R,x1,Py_BuildValue("i",(long) y2));
+			r[cr] = r[cd];
+			r[cd] = 99;
+			r[x1]= y2;
 		}
 		if(greek == 1){
 			int block = 0;
-			//			printf("c  cd %d cr %d\n",cd,cr);
 			for (i = cr-1; i > cd; i--){
-				//				printf("c  %d");
-				long t = PyInt_AsLong(PyList_GetItem(R,i));
-				if(PyInt_AsLong(PyList_GetItem(R,cr)) < t &&
-					 t < PyInt_AsLong(PyList_GetItem(R,cd))){
-					block = 1;
-				}
+				if (r[cr] < r[i] && r[i] < r[cd]){
+						block = 1;
+					}
 			}
 			if (block != 1){
-				int len = PyList_Size(R);
-				for (i = 0; i < n; i++){
-					PyList_Append(R,PyList_GetItem(R,i));
-				}
-				PyList_SetItem(R,len+cr,PyList_GetItem(R,cd));
-				PyList_SetItem(R,len+cd,Py_BuildValue("i",(long) 99));
-				PyList_SetItem(R,len+x1,Py_BuildValue("i",(long) y2));
 				sp = 1;
 			}
 		}
 	}
 	if (roman == 2 && greek == 0){
-		PyList_SetItem(R,x1,PyList_GetItem(R,cr));
-		PyList_SetItem(R,cr,Py_BuildValue("i",(long) 99));
+		r[x1]=r[cr];
+		r[cr]=99;
 	}
-	/* printf("c  sp %d [",sp); */
-	/* for (i = 0; i < PyList_Size(R)-1; i++){ */
-	/* 	printf("%d, ",PyInt_AsLong(PyList_GetItem(R,i))); */
-	/* } */
-	/* printf("%d] \n",PyInt_AsLong(PyList_GetItem(R,i))); */
-	return Py_BuildValue("Oi",R,sp);
+	PyObject* answer = PyList_New(length);
+	for (i = 0; i < length; i++){
+		PyList_SetItem(answer,i, Py_BuildValue("i",r[i]));
+	}
+	if (sp == 1){
+		for (i = 0; i < n; i++){
+			PyList_Append(answer,Py_BuildValue("i",r[i]));
+		}
+    PyList_SetItem(answer,length+cr,Py_BuildValue("i",r[cd]));
+    PyList_SetItem(answer,length+cd,Py_BuildValue("i",(long) 99));
+    PyList_SetItem(answer,length+x1,Py_BuildValue("i",(long) y2));
+	}
+	return Py_BuildValue("Oi",answer,sp);
 }
 
-static PyMethodDef RTestMethods[] = 
+static PyMethodDef RTestMethods[] =
 	{
 		{"rtest",rtest,METH_VARARGS, "Greet somebody."},
 		{NULL,NULL,0,NULL}
