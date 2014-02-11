@@ -158,7 +158,7 @@ def rtest(x1, y1, x2, y2, R, n): #PASS BY REFERENCE
 #       R - Updated list of red checker positions
 #
 
-import util
+#import util
 def game(B, R, n):
   splitcount=0
   save=[]

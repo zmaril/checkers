@@ -112,6 +112,7 @@ def vote(results):
   totMatieu = 0
   alternating = results[0].alternating
 
+  #replace this with any and map?
   for r in results:
     alternating = (alternating or r.alternating)
     totExceptions += r.exceptions
@@ -162,8 +163,10 @@ def GG(key):
         result1.solutions + result2.solutions
       )
 	  		  
+          
+          #to the second line should I add "or result1.solutions == 0?" I think so.
       if ((result1.alternating and result2.alternating) and
-          (result1.solutions != result2.solutions or result1.solutions == 1 or result1.solutions == 0)):
+          (result1.solutions != result2.solutions  or result1.solutions == 0 or result1.solutions == 1)):
         combinedResult.alternating = True
       elif result1.solutions == result2.solutions:
         if result1.solutions == 6:
@@ -179,54 +182,82 @@ def GG(key):
 #	      print result.solutions
   return vote(results)
   
+def GG2(key):
+  if key == None:
+    return None
+    
+  result = None
+  
+  if key.partitions != []:
+    pair = nextPair(key.partitions)
+  else:
+    pair = None
+
+  #Try all partitions
+  dontFit = False  #flag to alert if the partitions do not fit together
+  
+  while pair != None:
+    newKey = key.newKeyFromPartition(pair)
+    if newKey != None:
+      result = GG2(newKey)
+    else:
+      dontFit = True
+      
+      
+      #TODO:if GG(newKey).alternating = True!, return that result?
+    
+    if result != None and result.alternating == True:
+      return result
+      
+    pair = nextPair(key.partitions,pair)
+    
+  #Try Advancing all games
+  combinedResult = None
+  for i in range(len(key.startedGames)):
+    result = None
+    key2 = None
+    #handle a split in the game!
+    key1, key2 = key.newKeyFromAdvancingGame(i)
+    
+    if key2 == None:
+      result = GG2(key1)
+      
+      if result != None and result.alternating == True:
+        return result
+    else:
+      result1 = GG2(key1)
+      result2 = GG2(key2)
+      
+	  
+      combinedResult = Result( 
+        result1.exceptions + result2.exceptions,
+        result1.Matieu + result2.Matieu,
+        result1.solutions + result2.solutions
+      )
+	  		  
+          
+          #to the second line should I add "or result1.solutions == 0?" I think so.
+      if ((result1.alternating and result2.alternating) and
+          (result1.solutions != result2.solutions  or result1.solutions == 0 or result1.solutions == 1)):
+        combinedResult.alternating = True
+      elif result1.solutions == result2.solutions:
+        if result1.solutions == 6:
+          combinedResult.Matieu += 1
+        combinedResult.exceptions += 1
+      #TODO:if combinedResult.alternating == True, return that result?
+      if combinedResult.alternating == True:
+        return combinedResult
+      #results.append(combinedResult)
+  if combinedResult != None:
+    return combinedResult
+  if result != None:
+    return result
+  if result == None and dontFit:
+    return Result(0,0,0,True)
+  if result == None and dontFit == False:
+    return Result(0,0,1,True)
+  return result
+  #return vote(results)
+
 GG=GGMemoize(GG)
-
-def testKnownFailures4_8():
-  single = [[99,99,99,3,99,5,6,7]]
-  twobytwo = [[99,99,2,3,99,99,6,7]]
-  threebyone = [[99,99,99,3,4,5,99,7]]
-  onebythree = [[99,1,99,99,99,5,6,7]]
-  uprightdomino = [[99,99,99,3,4,99,6,7]]
-  otherdomino =   [[99,99,2,99,99,5,6,7]]
-
-  keys = []
-  #keys.append(Key(8,single*16))
-  #keys.append(Key(8,twobytwo + single*12))
-  #keys.append(Key(8,threebyone + onebythree + single * 10))
-  #keys.append(Key(8,twobytwo*2 + single*8))
-
-
-  #keys.append(Key(8,[[99,1,2,3,99,99,99,7]] + single * 7))
-  keys.append(Key(8,[[99,99,2,3,4,99,99,7]] + uprightdomino + otherdomino*4))
-  #keys.append(Key(8,[[99,2,3,99,99,99,6,7]] + uprightdomino*4 + otherdomino))
-  #keys.append(Key(8,[[99,1,99,3,99,5,99,7]]*2 + uprightdomino + otherdomino))
-  #keys.append(Key(9,onebythree*4 + uprightdomino + otherdomino))
-  for k in keys:
-    result = GG(k)
-    print "results"
-    print "solutions", result.solutions
-    print "alternating", result.alternating
-    print "exceptions", result.exceptions
-    print "Matieu", result.Matieu
-    print '------------------------------------------------------'
-
-
-  #a = [[99,99,2,3,99,99,6,7]]
-  #print(tournament(4*a, 1))
-  #a = [[99,1,99,3]]
-  #k = Key(4, 4*a)
-  #a = [[99,99,2,99,4]]
-  #b = [[99,1,99,99,4]]
-  #k = Key(5,6*a)
-  #k = Key(5,4*a + [[99,99,2,3,99]])
-  #k = Key(5,2*a + 2*b)
-  #a = [[99,99,99,3,99,5]]
-  #a = [[99,99,99,3,99,5]]
-  #a = [[99,99,2,99,4,99,6],[99,99,99,3,4,99,6]]
-  #b = [[99,99,99,3,99,5,6]]
-  #k = Key(7,a + 7*b)
-  #k = Key(6,[[99,99,99,3,99,5]]*2 + [[99,99,2,99,99,5]]*3)
-  #k = Key(5, [[99,99,2,99,4]]*6)# + [[99,1,99,99,4]]*1)
-
-
-#testKnownFailures4_8()
+GG2=GGMemoize(GG2)
