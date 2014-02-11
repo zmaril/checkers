@@ -45,4 +45,4 @@ def run_benchmarks():
       fileName = 'G_' + str(k) + '_' + str(n) + '.txt'
       test_all_intersection(k,n,fileName)
 
-test_all_intersection(3,5)
+#test_all_intersection(3,5)
