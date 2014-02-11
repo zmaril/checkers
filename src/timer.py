@@ -10,3 +10,9 @@ def benchmark():
             t = timeit(p,number=1,setup="from go import test_all_problems_G")
             print(t)
 
+if __name__ == "__main__":
+    try:
+        benchmark()
+    except KeyboardInterrupt:
+        import os
+        os._exit()
