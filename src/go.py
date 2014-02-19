@@ -4,6 +4,7 @@ from multiprocessing import Pool
 
 def outer_gg(sch_prob):
   n = len(sch_prob[1])
+#  print(sch_prob)
   gg = GG2(Key(n,parts=sch_prob))
   if gg.alternating is False:
     return (sch_prob,gg)
