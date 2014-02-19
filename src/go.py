@@ -28,7 +28,7 @@ def test_all_problems_G(k,n, db=0):
       problems.append(sch_prob)
       problem_type, shape_type = next_problem(k, n, problem_type, shapes, shape_type)
       
-    pool.map(outer_gg,problems)
+    failures.extend(filter(None, pool.map(outer_gg,problems)))
   return failures
 
 # Here is a sample script that walks through every possible schubert problem on
