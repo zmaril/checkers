@@ -24,6 +24,7 @@ class Const:
 
 
 class Result:
+  __slots__ = ['exceptions','Matieu','solutions','alternating']
   def __init__(self, e, m=0, s=1, a=False):
     self.exceptions = e
     self.Matieu = m
@@ -31,7 +32,8 @@ class Result:
     self.alternating = a #may not be true
 
 #TODO: Figure out how to make black & red lists of lists
-class Key:
+class Key: 
+  __slots__ = ['n','partitions','startedGames','trees']
   def __init__(self,_n, parts = [], games = [], t=None):
     self.n = _n
     self.partitions = sorted(parts[:])
