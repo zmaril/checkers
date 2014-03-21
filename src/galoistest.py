@@ -1,5 +1,3 @@
-from tournament import *
-
 # Unless otherwise stated below, a partition is written as in the following
 # example (which I refer to as 'multiplicity form'; there might be a more
 # standard word): One partition of 18 is 1+1+1+2+3+4+6, which would be denoted
