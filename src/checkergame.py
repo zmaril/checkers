@@ -90,7 +90,9 @@ def checkers2partitions(checkers):
 def rtest(x1, y1, x2, y2, R, n): #PASS BY REFERENCE 
   #print(x1,y1,x2,y2,R,n)
   greek=2; roman=2; sp=0
-  #Find the critical row, "cr".
+  #Find the critical row, "cr"
+  
+  
   for col in range(n-1, x2-1, -1):
     if R[col] == y2:
       cr = col

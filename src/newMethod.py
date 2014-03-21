@@ -9,8 +9,12 @@ class GGMemoize:
         self.memo = {}
     def __call__(self, *args):
       arg = args[0]
+      if len(self.memo) >= 100000:
+          self.memo = {}
+          print "DROPPPPP THE CACHE"
       if not arg in self.memo:
         self.memo[arg] = self.f(arg)
+     
       return self.memo[arg]
 
 #TODO: see how gamePreemptive should handle trees (source checkergame.py)

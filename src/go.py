@@ -27,13 +27,11 @@ def get_problems(k,n,m):
     problem_type, shape_type = next_problem(k, n, problem_type, shapes, shape_type)
 
 def test_all_problems_G(k,n, db=0):
+  pool = Pool()
   boxes = k*(n-k)
   failures = []
   #m is the number of conditions
   for m in range(3, boxes+1):
-    for problem in get_problems(k,n,m):
-      t = outer_gg(problem)
-      if t is not None:
-        failures.append(t)
+    failures.append(filter(None,pool.map(outer_gg,get_problems(k,n,m))))
   return failures
 
