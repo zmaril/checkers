@@ -10,6 +10,7 @@ def outer_gg(sch_prob):
     return (sch_prob,gg)
 
 def get_problems(k,n,m):
+  pdb.set_trace
   boxes = k*(n-k)
   shapes = get_all_parts(k,n)
   problem_type = [m-1] + (boxes-m)*[0]
