@@ -1,4 +1,4 @@
-from galoistest import *
+from galoistest import makeproblem, get_all_parts, next_problem
 from newMethod import GG2, Key
 from multiprocessing import Pool
 import random
@@ -19,7 +19,7 @@ def get_problems(k,n,m):
   for i, item in enumerate(problem_type):
     shape_type[i+1] = len(shapes[i+1])*[0]
     shape_type[i+1][-1] = item
-    
+
   problems = []
   while problem_type !=[]:
     print_prob, sch_prob = makeproblem(k, n, problem_type, shapes, shape_type)
@@ -27,11 +27,10 @@ def get_problems(k,n,m):
     problem_type, shape_type = next_problem(k, n, problem_type, shapes, shape_type)
 
 def test_all_problems_G(k,n, db=0):
-  pool = Pool()
+  #pool = Pool()
   boxes = k*(n-k)
   failures = []
   #m is the number of conditions
   for m in range(3, boxes+1):
-    failures.append(filter(None,pool.map(outer_gg,get_problems(k,n,m))))
+    failures.append(filter(None,map(outer_gg,get_problems(k,n,m))))
   return failures
-

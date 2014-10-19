@@ -1,31 +1,5 @@
-#see if its supposed to reappend the red at the beginning
-#figure out why solutions aren't correct, if reappend always the same still not right though
-#otherwise wrong
-import inspect
-
-class GGMemoize:
-    def __init__(self, f):
-        self.f = f
-        self.memo = {}
-    def __call__(self, *args):
-      arg = args[0]
-      if len(self.memo) >= 100000:
-          self.memo = {}
-          print "DROPPPPP THE CACHE"
-      if not arg in self.memo:
-        self.memo[arg] = self.f(arg)
-     
-      return self.memo[arg]
-
-#TODO: see how gamePreemptive should handle trees (source checkergame.py)
-#TODO: find source of infinite loop
 from checkergame import gamePreemptive, setupGame
-from combinations import nextPair,allPairs
-
-class Const:
-  def __init__(self):
-    self.count = 0
-
+from combinations import nextPair
 
 class Result:
   __slots__ = ['exceptions','Matieu','solutions','alternating']
@@ -35,8 +9,7 @@ class Result:
     self.solutions = s
     self.alternating = a #may not be true
 
-#TODO: Figure out how to make black & red lists of lists
-class Key: 
+class Key:
   __slots__ = ['n','partitions','startedGames','trees']
   def __init__(self,_n, parts = [], games = [], t=None):
     self.n = _n
@@ -49,7 +22,7 @@ class Key:
 
   def __eq__(self,other):
       if other == None:
-         return False 
+         return False
       n = self.n == other.n
       p = self.partitions == other.partitions
       s = self.startedGames == other.startedGames
@@ -70,9 +43,9 @@ class Key:
     newKey = Key(self.n,self.partitions,self.startedGames,self.trees)
     newKey.partitions.remove(pair[0])
     newKey.partitions.remove(pair[1])
-    
+
     black,red = setupGame(pair[0],pair[1])
-	
+
     if red != {}:
       newKey.startedGames.append((black,red))
     else:
@@ -104,99 +77,10 @@ class Key:
       newKey1.startedGames.pop(i)
       newKey1.partitions.append(red[:])
       return newKey1, None
-    
-def vote(results):
-  if results == []:
-    return Result(0,0,1,True)		#Empty result
-  if all(map(lambda x: x is None,results)):
-    return Result(0,0,0,True)		#Test case for bottom of tree
-  if len(results) == 1:
-    return results[0]
 
-  results = [x for x in results if x != None]
-
-  solutions = results[0].solutions
-
-  totExceptions = 0
-  totMatieu = 0
-  alternating = results[0].alternating
-
-  #replace this with any and map?
-  for r in results:
-    alternating = (alternating or r.alternating)
-    totExceptions += r.exceptions
-    totMatieu = r.Matieu
-    #TODO: Consider breaking if alternating is true to save time!
-
-  newResult = Result(totExceptions,totMatieu,solutions,alternating)
-  return newResult
-
-# Main function
-def GG(key):
-  if key == None:
-    return None
-  results = []
-  if key.partitions != []:
-    pair = nextPair(key.partitions)
-  else:
-    pair = None
-
-  #Try all partitions
-  while pair != None:
-    newKey = key.newKeyFromPartition(pair)
-    if newKey != None:
-      results.append(GG(newKey))
-      #TODO:if GG(newKey).alternating = True!, return that result?
-    else:
-      results.append(None)
-    pair = nextPair(key.partitions,pair)
-    
-  #Try Advancing all games
-  for i in range(len(key.startedGames)):
-    key2 = None
-    #handle a split in the game!
-    key1, key2 = key.newKeyFromAdvancingGame(i)
-    
-    if key2 == None:
-      results.append(GG(key1))
-      #TODO:if GG(newKey).alternating = True!, return that result?
-    #A split occurred, must combine results
-    else:
-      result1 = GG(key1)
-      result2 = GG(key2)
-      
-	  
-      combinedResult = Result( 
-        result1.exceptions + result2.exceptions,
-        result1.Matieu + result2.Matieu,
-        result1.solutions + result2.solutions
-      )
-	  		  
-          
-          #to the second line should I add "or result1.solutions == 0?" I think so.
-      if ((result1.alternating and result2.alternating) and
-          (result1.solutions != result2.solutions  or result1.solutions == 0 or result1.solutions == 1)):
-        combinedResult.alternating = True
-      elif result1.solutions == result2.solutions:
-        if result1.solutions == 6:
-          combinedResult.Matieu += 1
-        combinedResult.exceptions += 1
-      #TODO:if combinedResult.alternating == True, return that result?
-      results.append(combinedResult)
-
-#  for result in results:
-#    if result.solutions == 4:
-#	  print inspect.getmembers(key)
-#	  for result in results:
-#	      print result.solutions
-  return vote(results)
-  
 def GG2(key):
-  if key == None:
-    return None
-    
   result = None
-  
+
   if key.partitions != []:
     pair = nextPair(key.partitions)
   else:
@@ -204,22 +88,21 @@ def GG2(key):
 
   #Try all partitions
   dontFit = False  #flag to alert if the partitions do not fit together
-  
+
   while pair != None:
     newKey = key.newKeyFromPartition(pair)
     if newKey != None:
       result = GG2(newKey)
     else:
       dontFit = True
-      
-      
+
       #TODO:if GG(newKey).alternating = True!, return that result?
-    
+
     if result != None and result.alternating == True:
       return result
-      
+
     pair = nextPair(key.partitions,pair)
-    
+
   #Try Advancing all games
   combinedResult = None
   for i in range(len(key.startedGames)):
@@ -227,24 +110,24 @@ def GG2(key):
     key2 = None
     #handle a split in the game!
     key1, key2 = key.newKeyFromAdvancingGame(i)
-    
+
     if key2 == None:
       result = GG2(key1)
-      
+
       if result != None and result.alternating == True:
         return result
     else:
       result1 = GG2(key1)
       result2 = GG2(key2)
-      
-	  
-      combinedResult = Result( 
+
+
+      combinedResult = Result(
         result1.exceptions + result2.exceptions,
         result1.Matieu + result2.Matieu,
         result1.solutions + result2.solutions
       )
-	  		  
-          
+
+
           #to the second line should I add "or result1.solutions == 0?" I think so.
       if ((result1.alternating and result2.alternating) and
           (result1.solutions != result2.solutions  or result1.solutions == 0 or result1.solutions == 1)):
@@ -266,7 +149,21 @@ def GG2(key):
   if result == None and dontFit == False:
     return Result(0,0,1,True)
   return result
-  #return vote(results)
 
-GG=GGMemoize(GG)
+class GGMemoize:
+    def __init__(self, f):
+        self.f = f
+        self.memo = {}
+    def __call__(self, *args):
+      arg = args[0]
+      if len(self.memo) >= 100000:
+          self.memo = {}
+          print "DROPPPPP THE CACHE"
+      if not arg in self.memo:
+        self.memo[arg] = self.f(arg)
+
+      return self.memo[arg]
+
 GG2=GGMemoize(GG2)
+
+(+ 177 55 222 36 167)

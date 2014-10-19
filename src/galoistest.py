@@ -1,5 +1,4 @@
-from tournament import *
-
+from checkergame import partitions2checkers
 # Unless otherwise stated below, a partition is written as in the following
 # example (which I refer to as 'multiplicity form'; there might be a more
 # standard word): One partition of 18 is 1+1+1+2+3+4+6, which would be denoted
@@ -35,13 +34,6 @@ def makeproblem(k, n, problem_type, shapes, shape_type):
   out_problem = []
   for i in range(len(problem_type)):
     if problem_type[i] == 0: continue
-    #The following checks for bad input
-    error1 = 'Not enough shapes specified in shape_type[{0}]'.format(i)
-    error2 = 'Length mismatch in shapes[{0}] and shape_type[{0}]'.format(i)
-    if sum(shape_type[i+1]) != problem_type[i]:
-      raise ValueError(error1)
-    if len(shape_type[i+1]) != len(shapes[i+1]):
-      raise ValueError(error2)
     #Now we attach the schubert conditions to 'out_problem'
     for j in range(len(shape_type[i+1])):
       #Append the correct number of copies of shapes[i+1][j] to the problem
@@ -186,8 +178,6 @@ def next_shape_type(arr):
     arr[i] = 0
     try: arr[i-1] += 1
     except IndexError: return []
-  elif arr[-1] < -1:
-    raise ValueError('Bad input')
   return arr
 
 ################################################################################

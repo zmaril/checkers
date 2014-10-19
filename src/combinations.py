@@ -2,8 +2,8 @@
 # input: list with or without repeats, should all be same type
 # ouput: next Lexicographic pair (type list)
 def nextPair(multiset,combination=None):
-  
-  array = sorted(multiset[:]) 
+
+  array = sorted(multiset[:])
 
   #first combination is simply first two elements
   if len(multiset) < 2:
@@ -22,7 +22,7 @@ def nextPair(multiset,combination=None):
   #end condition
   if curr == [array[-2],array[-1]]:
     return None
- 
+
   #in case there is only one copy of maxVal which is already
   #being used by curr[0]
   if curr[0] == maxVal:
@@ -41,7 +41,7 @@ def nextPair(multiset,combination=None):
         curr[0] = newVal
         #curr[1] should be next element in list
         #allow for one last iteration
-        lastTime = True 
+        lastTime = True
   #case only change last element
   else:
     array.remove(curr[0])
@@ -52,12 +52,4 @@ def nextPair(multiset,combination=None):
         curr[1] = newVal
         break
 
-  return curr  
-
-def allPairs(multiset):
-  pair = nextPair(multiset)
-  result = []
-  while pair != None: 
-    result.append(pair)
-    pair = nextPair(multiset,pair)
-  return result
+  return curr
