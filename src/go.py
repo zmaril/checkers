@@ -51,7 +51,7 @@ def saveToFile(k,n,fileName):
   f = open(fileName, 'w')
   results = test_all_problems_G(k,n)
   for r in results:
-    f.write(str(r))
+    f.write(str(list(r)))
     f.write('\n')
     #f.write(str(r[0]) + ' = ' + str(r[1]) + '\n')
   f.close()
